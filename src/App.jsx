@@ -104,12 +104,6 @@ function getSystemPalette(systemId) {
   }
 }
 
-function getMarkerLabel(systemId) {
-  return isLeaderSystem(systemId)
-    ? 'Leader'
-    : `UAV ${systemId.toString().padStart(2, '0')}`
-}
-
 function createAircraftSvg() {
   return `
     <svg class="aircraft-marker__svg" viewBox="0 0 64 64" aria-hidden="true">
@@ -134,7 +128,6 @@ function createMarkerContent() {
       <div class="aircraft-marker__icon-shell" data-role="icon-shell">
         ${createAircraftSvg()}
       </div>
-      <div class="aircraft-marker__label" data-role="label"></div>
     </div>
     <div class="aircraft-marker__ground-track">
       <div class="aircraft-marker__stem" data-role="stem"></div>
@@ -147,7 +140,6 @@ function createMarkerContent() {
     altitudeElement: root.querySelector('[data-role="altitude"]'),
     flightStackElement: root.querySelector('[data-role="flight-stack"]'),
     iconShellElement: root.querySelector('[data-role="icon-shell"]'),
-    labelElement: root.querySelector('[data-role="label"]'),
     stemElement: root.querySelector('[data-role="stem"]'),
   }
 }
@@ -167,10 +159,6 @@ function updateMarkerContent(entry, systemState) {
 
   if (entry.altitudeElement) {
     entry.altitudeElement.textContent = formatAltitudeBadge(telemetry.altitude)
-  }
-
-  if (entry.labelElement) {
-    entry.labelElement.textContent = getMarkerLabel(systemState.systemId)
   }
 
   if (entry.stemElement) {

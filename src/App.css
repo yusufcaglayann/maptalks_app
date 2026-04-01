@@ -342,17 +342,6 @@
   fill: rgba(255, 255, 255, 0.78);
 }
 
-.aircraft-marker__label {
-  margin-top: 5px;
-  text-align: center;
-  color: #f8fbff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-shadow: 0 2px 6px rgba(2, 8, 18, 0.45);
-}
-
 .aircraft-marker__ground-track {
   position: absolute;
   left: 50%;
