@@ -15,8 +15,10 @@ const TILE_SOURCE = {
 }
 
 const EXTRA_ZOOM_OUT_STEPS = 4
+const EXTRA_ZOOM_IN_STEPS = 2
 const MAX_MARKER_LIFT_PX = 160
 const METERS_PER_MARKER_LIFT_PX = 20
+const SYSTEM_FOCUS_ZOOM = 16
 
 function isFiniteNumber(value) {
   return typeof value === 'number' && Number.isFinite(value)
@@ -342,8 +344,9 @@ function App() {
     }
 
     const minZoom = Math.max(0, metadata.minZoom - EXTRA_ZOOM_OUT_STEPS)
+    const maxZoom = metadata.maxZoom + EXTRA_ZOOM_IN_STEPS
     const initialZoom = Math.min(
-      metadata.maxZoom,
+      maxZoom,
       Math.max(minZoom, TILE_SOURCE.initialZoom),
     )
 
@@ -351,7 +354,7 @@ function App() {
       center: metadata.center,
       zoom: initialZoom,
       minZoom,
-      maxZoom: metadata.maxZoom,
+      maxZoom,
       baseLayer: new maptalks.TileLayer('base', {
         urlTemplate: metadata.tileUrlTemplate,
         tileSize: [256, 256],
@@ -412,14 +415,29 @@ function App() {
   function focusSystem(systemState) {
     setSelectedSystemId(systemState.systemId)
 
-    if (!mapInstanceRef.current || !hasSystemPosition(systemState)) {
+    const map = mapInstanceRef.current
+    if (!map || !hasSystemPosition(systemState)) {
       return
     }
 
-    mapInstanceRef.current.setCenter([
+    const coordinate = [
       systemState.telemetry.longitude,
       systemState.telemetry.latitude,
-    ])
+    ]
+    const targetZoom = Math.min(
+      map.getMaxZoom(),
+      Math.max(map.getZoom(), SYSTEM_FOCUS_ZOOM),
+    )
+
+    map.animateTo(
+      {
+        center: coordinate,
+        zoom: targetZoom,
+      },
+      {
+        duration: 380,
+      },
+    )
   }
 
   const selectedTelemetry = selectedSystem?.telemetry ?? {}
@@ -435,8 +453,8 @@ function App() {
             <h1>Canli Telemetri Haritasi</h1>
             <p className="topbar__subtitle">
               ROS Bridge verileri backend uzerinden dinleniyor ve SVG ucak ikonlari
-              ile harita ustunde gosteriliyor. Zoom alt limiti de daha fazla geri
-              cekilebilecek sekilde genisletildi.
+              ile harita ustunde gosteriliyor. Zoom araligi daha fazla geri
+              cekilebilecek ve ucaklara daha yakin girilebilecek sekilde genisletildi.
             </p>
           </div>
 
@@ -561,7 +579,7 @@ function App() {
 
           <div className="fleet-panel__footer">
             <span>Backend: {backendUrl}</span>
-            <span>Min zoom daha geri cekildi</span>
+            <span>Zoom araligi genisletildi</span>
           </div>
         </aside>
       </div>
