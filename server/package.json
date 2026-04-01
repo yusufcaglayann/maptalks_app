@@ -1,0 +1,23 @@
+{
+  "name": "gcs-telemetry-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "roslib": "^1.4.1",
+    "socket.io": "^4.8.1",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "@types/roslib": "^1.3.5",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
